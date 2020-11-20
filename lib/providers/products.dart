@@ -60,6 +60,11 @@ class Products with ChangeNotifier {
     notifyListeners();
   }
 
+  void addProduct(Product product) {
+    _items.add(product);
+    notifyListeners();
+  }
+
   Product findById(id) {
     return _items.firstWhere((prod) => prod.id == id);
   }

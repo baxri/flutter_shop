@@ -12,7 +12,36 @@ import '../screens/cart_screen.dart';
 
 enum FilterOptions { Favorites, All }
 
-class ProductsOverviewScreen extends StatelessWidget {
+class ProductsOverviewScreen extends StatefulWidget {
+  @override
+  _ProductsOverviewScreenState createState() => _ProductsOverviewScreenState();
+}
+
+class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
+  var _isInit = true;
+  var _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() async {
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
+      await Provider.of<Products>(context).fetchProducts();
+      _isLoading = false;
+      setState(() {
+        _isInit = false;
+      });
+    }
+
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     final productsContainer = Provider.of<Products>(context, listen: false);
@@ -51,7 +80,13 @@ class ProductsOverviewScreen extends StatelessWidget {
         ],
       ),
       drawer: AppDrawer(),
-      body: ProductsGrid(),
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(
+                strokeWidth: 1.0,
+              ),
+            )
+          : ProductsGrid(),
     );
   }
 }

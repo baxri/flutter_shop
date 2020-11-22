@@ -20,7 +20,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
   var _init = true;
 
   Product _editProduct =
-      Product(id: null, title: '', description: '', price: 0, imageUrl: '');
+      Product(id: '', title: '', description: '', price: 0, imageUrl: '');
 
   var _initValue = {
     'title': '',
@@ -82,8 +82,14 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
     _form.currentState.save();
 
-    Provider.of<Products>(context, listen: false).addProduct(_editProduct);
-    Navigator.of(context).pop();
+    Provider.of<Products>(context, listen: false)
+        .addProduct(_editProduct)
+        .catchError((error) {
+      Scaffold.of(context)
+          .showSnackBar(SnackBar(content: Text(error.toString())));
+    }).then((_) {
+      Navigator.of(context).pop();
+    });
   }
 
   @override
